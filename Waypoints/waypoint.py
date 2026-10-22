@@ -53,3 +53,36 @@ def follow(x, y, heading, waypoints):
     turn = drive = 0.0 
     print(f" completed moving, turn_cmd={turn:.2f}, drive_cmd={drive:.2f}")
     return x, y, heading
+
+def ask_float(prompt):
+    while True:
+        text = input(prompt).strip()
+        if text.isdigit() and int(text) > 0:
+            return int(text)
+        print(" Please use a whole numbber avoe one")
+
+def ask_count(prompt):
+    while True:
+        text = input(prompt).strip()
+        if text.isdigit() and int(text) > 0:
+            return int(text)
+        print("  Please enter a whole number of at least 1.")
+ 
+
+def main(): 
+    print("Units in meters. Heading in degrees")
+    x = ask_float("x:")
+    y = ask_float("y:")
+    heading = ask_float("start heading :") % 360
+    while True:
+        count = ask_count("# of waypoints?: ")
+        waypoints = []
+        for i in range(1, count + 1):
+            waypoints.append((ask_float(f"waypoint {i} x:")),
+                              ask_float(f"waypoimt {i} y:"))
+        x, y, heading = follow(x, y, heading, waypoints)
+        if input("more waypoitns? (y/n):  ").strip().lower() != "y":
+            break
+                              
+if __name__ == "__main__":
+    main()
