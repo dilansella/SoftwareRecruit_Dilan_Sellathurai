@@ -27,3 +27,10 @@ def controller(x,y, heading,wx, wy):
     approach = clamp(distance / SLOW_RADIUS, MIN_DRIVE, 1.0)
     return turn_cmd , allignment * approach
 
+def step(x, y, heading, turn_cmd, drive_cmd):
+    turn = clamp(turn_cmd) * MAX_TURN_RATE * DT
+    mid = math.radians(heading + turn / 2)
+    dist = clamp(drive_cmd) * MAX_SPEED * DT
+    return (x + dist * math.sin(mid), y + dist * math.cos(mid),
+            (heading + turn) % 360)
+
