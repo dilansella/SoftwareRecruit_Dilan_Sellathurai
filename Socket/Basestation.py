@@ -22,12 +22,13 @@ def main():
         conn.settimeout(10)
         with conn:
             try:
-                size = int.from_bytes(recv_exact(conn, 4), "big")
-                if size == 0:
-                    break
-                data = recv_exact(conn, size)
-                if data[:2] != b"BM" or int.from_bytes(data[28:30], "little") != 24:
-                    print("not 24 bit, fram drop")
+                while True:
+                    size = int.from_bytes(recv_exact(conn, 4), "big")
+                    if size == 0:
+                        break
+                    data = recv_exact(conn, size)
+                    if data[:2] != b"BM" or int.from_bytes(data[28:30], "little") != 24:
+                        print("not 24 bit, fram drop")
                     continue
                 with open("output.bmp", "wn") as f:
                     f.write(data)
