@@ -34,3 +34,22 @@ def step(x, y, heading, turn_cmd, drive_cmd):
     return (x + dist * math.sin(mid), y + dist * math.cos(mid),
             (heading + turn) % 360)
 
+def follow(x, y, heading, waypoints):
+    turn = drive = 0.0
+    steps = 0
+    for i, (wx, wy) in enumerate(waypoints, 1):
+        start = steps 
+        while math.hypot(wx - x, wy-y) > REACHED_RADIUS:
+            if (steps - start) * DT > TIMEOUT_S:
+                print(f"Waypoint {i} time out")
+                return x, y, heading
+            turn, drive = controller(x, y, heading, wx, wy)
+            x, y, heading = step(x, y, heading, turn, drive)
+            steps += 1
+            if steps % 10 ==0: 
+                print(f"t={steps * DT:6.1f}s pos=({x:7.2f}, {y:7.2f}) "
+                      f"hdg={heading:6.1f} turn={turn:+.2f} drive={drive:.2f}")
+                print(f"Waypoint {i} reached ({x:.2f}, {y:.2f})")
+    turn = drive = 0.0 
+    print(f" completed moving, turn_cmd={turn:.2f}, drive_cmd={drive:.2f}")
+    return x, y, heading
